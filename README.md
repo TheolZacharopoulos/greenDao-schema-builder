@@ -45,3 +45,4 @@ schemaBuilder.generate();
  
  - **DaoGenerator-1.3.0**
  - **greendao-2.0.0**
+ - **freemarker-2.3.14**
