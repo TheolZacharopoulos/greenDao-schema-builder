@@ -6,7 +6,7 @@ Builds a GreenDAO schema from a given domain model using java reflection.
 
 A SchemaBuilder object can be used to generate a greenDao schema that is based on a domain model class, 
 including relationships, interface implementations and super classes.
- 
+
 ### How to use it
 ```
 // The entity class is a model class.
@@ -38,3 +38,10 @@ schemaBuilder.addEntityRelation(
 // Generate the schema.
 schemaBuilder.generate();
 ```
+
+### How To Contribute
+ Create a java project import from existing sources.
+ Add to your dependencies:
+ 
+ - **DaoGenerator-1.3.0**
+ - **greendao-2.0.0**
