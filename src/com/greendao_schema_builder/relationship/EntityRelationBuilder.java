@@ -26,25 +26,25 @@ public class EntityRelationBuilder {
     }
 
     /**
-     * Returns the target greenDao Entity of a relation.
+     * Returns the source greenDao Entity of a relation.
      * @param _entityRelation the entity relation.
      * @return the target greenDao Entity of a relation.
      * @throws InvalidEntityException
      */
-    private Entity getTargetEntity(EntityRelation _entityRelation) throws InvalidEntityException {
-        Class<?> targetEntityClass = _entityRelation.getTargetEntity();
+    private Entity getSourceEntity(EntityRelation _entityRelation) throws InvalidEntityException {
+        Class<?> sourceEntityClass = _entityRelation.getSourceEntity();
         for (Entity entity : daoSchema.getEntities()) {
-            if (entity.getClassName().equals(targetEntityClass.getSimpleName())) {
+            if (entity.getClassName().equals(sourceEntityClass.getSimpleName())) {
                 return entity;
             }
         }
-        throw new InvalidEntityException("No such Target Entity: " + targetEntityClass.getSimpleName());
+        throw new InvalidEntityException("No such Source Entity: " + sourceEntityClass.getSimpleName());
     }
 
     /**
      * Returns the relation greenDao Entity of a relation.
      * @param _entityRelation the entity relation.
-     * @return the target greenDao Entity of a relation.
+     * @return the source greenDao Entity of a relation.
      * @throws InvalidEntityException
      */
     private Entity getRelationEntity(EntityRelation _entityRelation) throws InvalidEntityException {
@@ -58,25 +58,25 @@ public class EntityRelationBuilder {
     }
 
     /**
-     * Builds a new Entity relation between a target and a relation greenDao entities.
+     * Builds a new Entity relation between a source and a relation greenDao entities.
      * @param _entityRelation the entity relation to be built.
      * @throws InvalidEntityRelationException
      * @throws InvalidEntityException
      */
     public void buildRelation(EntityRelation _entityRelation) throws InvalidEntityRelationException, InvalidEntityException {
-        Entity targetEntity = getTargetEntity(_entityRelation);
+        Entity sourceEntity = getSourceEntity(_entityRelation);
         Entity relationEntity = getRelationEntity(_entityRelation);
 
         Property idProperty =
-            targetEntity.addStringProperty(relationEntity.getClassName().toLowerCase() + ID_PROPERTY_POSTFIX)
+            sourceEntity.addStringProperty(relationEntity.getClassName().toLowerCase() + ID_PROPERTY_POSTFIX)
             .getProperty();
 
         if (_entityRelation.getRelationType().equals(EntityRelationType.ONE_TO_MANY)) {
-            targetEntity.addToMany(relationEntity, idProperty);
+            sourceEntity.addToMany(relationEntity, idProperty, _entityRelation.getRelationFieldName());
         }
 
         else if (_entityRelation.getRelationType().equals(EntityRelationType.ONE_TO_ONE)) {
-            targetEntity.addToOne(relationEntity, idProperty);
+            sourceEntity.addToOne(relationEntity, idProperty, _entityRelation.getRelationFieldName());
         }
 
         else {

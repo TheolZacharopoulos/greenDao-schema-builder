@@ -6,12 +6,12 @@ package com.greendao_schema_builder.relationship;
 public class EntityRelation {
 
     // The entity that has the relation.
-    private final Class<?> targetEntity;
+    private final Class<?> sourceEntity;
 
-    // The entity that is related to the targetEntity.
+    // The entity that is related to the sourceEntity.
     private final Class<?> relationEntity;
 
-    // The fieldName which is related on the targetEntity with the relationEntity.
+    // The fieldName which is related on the sourceEntity with the relationEntity.
     private final String relationFieldName;
 
     // The type of the relation.
@@ -19,25 +19,25 @@ public class EntityRelation {
 
     /**
      * Constructor.
-     * @param _targetEntity The entity that has the relation.
-     * @param _relationEntity The entity that is related to the targetEntity.
-     * @param _relationFieldName The fieldName which is related on the targetEntity with the relationEntity.
+     * @param _sourceEntity The entity that has the relation.
+     * @param _relationEntity The entity that is related to the sourceEntity.
+     * @param _relationFieldName The fieldName which is related on the sourceEntity with the relationEntity.
      * @param _relationType The type of the relation.
      */
     public EntityRelation(
-            Class<?> _targetEntity,
+            Class<?> _sourceEntity,
             Class<?> _relationEntity,
             String _relationFieldName,
             EntityRelationType _relationType)
     {
-        targetEntity = _targetEntity;
+        sourceEntity = _sourceEntity;
         relationEntity = _relationEntity;
         relationFieldName = _relationFieldName;
         relationType = _relationType;
     }
 
-    public Class<?> getTargetEntity() {
-        return targetEntity;
+    public Class<?> getSourceEntity() {
+        return sourceEntity;
     }
 
     public Class<?> getRelationEntity() {
@@ -64,7 +64,7 @@ public class EntityRelation {
 
         final EntityRelation other = (EntityRelation) obj;
 
-        if (this.targetEntity != other.targetEntity) {
+        if (this.sourceEntity != other.sourceEntity) {
             return false;
         }
 
