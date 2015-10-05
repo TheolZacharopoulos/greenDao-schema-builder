@@ -14,6 +14,9 @@ public class EntityRelation {
     // The fieldName which is related on the sourceEntity with the relationEntity.
     private final String relationFieldName;
 
+    // The fieldName of the relative relationFieldName in order to relate the tables.
+    private final String relationFieldNameToCreate;
+
     // The type of the relation.
     private final EntityRelationType relationType;
 
@@ -22,17 +25,20 @@ public class EntityRelation {
      * @param _sourceEntity The entity that has the relation.
      * @param _relationEntity The entity that is related to the sourceEntity.
      * @param _relationFieldName The fieldName which is related on the sourceEntity with the relationEntity.
+     * @param _relationFieldName The fieldName of the relative relationFieldName in order to relate the tables.
      * @param _relationType The type of the relation.
      */
     public EntityRelation(
             Class<?> _sourceEntity,
             Class<?> _relationEntity,
             String _relationFieldName,
+            String _relationFieldNameToCreate,
             EntityRelationType _relationType)
     {
         sourceEntity = _sourceEntity;
         relationEntity = _relationEntity;
         relationFieldName = _relationFieldName;
+        relationFieldNameToCreate = _relationFieldNameToCreate;
         relationType = _relationType;
     }
 
@@ -46,6 +52,10 @@ public class EntityRelation {
 
     public String getRelationFieldName() {
         return relationFieldName;
+    }
+
+    public String getRelationFieldNameToCreate() {
+        return relationFieldNameToCreate;
     }
 
     public EntityRelationType getRelationType() {

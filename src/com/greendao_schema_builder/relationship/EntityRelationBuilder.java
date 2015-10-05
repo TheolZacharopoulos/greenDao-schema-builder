@@ -12,7 +12,7 @@ import de.greenrobot.daogenerator.Schema;
  */
 public class EntityRelationBuilder {
 
-    private static final String ID_PROPERTY_POSTFIX = "Id";
+    private static final String ID_PROPERTY_POSTFIX = "Code";
 
     // the greenDao Schema
     private final Schema daoSchema;
@@ -67,9 +67,15 @@ public class EntityRelationBuilder {
         Entity sourceEntity = getSourceEntity(_entityRelation);
         Entity relationEntity = getRelationEntity(_entityRelation);
 
-        Property idProperty =
-            sourceEntity.addStringProperty(relationEntity.getClassName().toLowerCase() + ID_PROPERTY_POSTFIX)
-            .getProperty();
+        String relationField = _entityRelation.getRelationFieldNameToCreate();
+        Property idProperty;
+        if (relationField == null){
+            idProperty = sourceEntity.addStringProperty(relationEntity.getClassName().toLowerCase()
+                    + ID_PROPERTY_POSTFIX).getProperty();
+        } else {
+            idProperty = sourceEntity.addStringProperty(relationField).getProperty();
+//            idProperty = sourceEntity.addStringProperty(idProperty);
+        }
 
         if (_entityRelation.getRelationType().equals(EntityRelationType.ONE_TO_MANY)) {
             sourceEntity.addToMany(relationEntity, idProperty, _entityRelation.getRelationFieldName());
