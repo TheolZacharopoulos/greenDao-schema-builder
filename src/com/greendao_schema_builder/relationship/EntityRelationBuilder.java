@@ -68,13 +68,17 @@ public class EntityRelationBuilder {
         Entity relationEntity = getRelationEntity(_entityRelation);
 
         String relationField = _entityRelation.getRelationFieldNameToCreate();
-        Property idProperty;
+        Property idProperty = null;
         if (relationField == null){
             idProperty = sourceEntity.addStringProperty(relationEntity.getClassName().toLowerCase()
                     + ID_PROPERTY_POSTFIX).getProperty();
         } else {
-            idProperty = sourceEntity.addStringProperty(relationField).getProperty();
-//            idProperty = sourceEntity.addStringProperty(idProperty);
+            for (Property property : sourceEntity.getProperties()) {
+                if (property.getPropertyName().equals(relationField)) {
+                    idProperty = property;
+                    break;
+                }
+            }
         }
 
         if (_entityRelation.getRelationType().equals(EntityRelationType.ONE_TO_MANY)) {
