@@ -70,14 +70,17 @@ public class EntityRelationBuilder {
         String relationField = _entityRelation.getRelationFieldNameToCreate();
         Property idProperty = null;
         if (relationField == null){
-            idProperty = sourceEntity.addStringProperty(relationEntity.getClassName().toLowerCase()
-                    + ID_PROPERTY_POSTFIX).getProperty();
+            idProperty = relationEntity.addStringProperty(sourceEntity.getClassName().toLowerCase()
+                    + ID_PROPERTY_POSTFIX).notNull().getProperty();
         } else {
-            for (Property property : sourceEntity.getProperties()) {
+            for (Property property : relationEntity.getProperties()) {
                 if (property.getPropertyName().equals(relationField)) {
                     idProperty = property;
                     break;
                 }
+            }
+            if (idProperty == null) {
+                idProperty = relationEntity.addStringProperty(relationField).notNull().getProperty();
             }
         }
 
