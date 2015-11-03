@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class EntityPropertiesBuilder {
 
-    private static final String ENUMS_PREFIX = "AsString";
     private static final String PRIMARY_KEY_DEFAULT_NAME = "Id";
 
     // The greenDao schema.
@@ -123,7 +122,7 @@ public class EntityPropertiesBuilder {
             // Convert the Enums to Strings.
             else if (((Class<?>) fieldType).isEnum()) {
                 propertyType = PropertyType.String;
-                greenDaoEntity.addProperty(propertyType, fieldName + ENUMS_PREFIX);
+                greenDaoEntity.addProperty(propertyType, fieldName );
                 continue;
             }
 
