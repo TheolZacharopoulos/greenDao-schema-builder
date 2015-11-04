@@ -32,12 +32,14 @@ public class EntityRelationBuilder {
      * @throws InvalidEntityException
      */
     private Entity getSourceEntity(EntityRelation _entityRelation) throws InvalidEntityException {
-        Class<?> sourceEntityClass = _entityRelation.getSourceEntity();
+        final Class<?> sourceEntityClass = _entityRelation.getSourceEntity();
+
         for (Entity entity : daoSchema.getEntities()) {
             if (entity.getClassName().equals(sourceEntityClass.getSimpleName())) {
                 return entity;
             }
         }
+
         throw new InvalidEntityException("No such Source Entity: " + sourceEntityClass.getSimpleName());
     }
 
@@ -48,13 +50,45 @@ public class EntityRelationBuilder {
      * @throws InvalidEntityException
      */
     private Entity getRelationEntity(EntityRelation _entityRelation) throws InvalidEntityException {
-        Class<?> relationEntityClass = _entityRelation.getRelationEntity();
+        final Class<?> relationEntityClass = _entityRelation.getRelationEntity();
+
         for (Entity entity : daoSchema.getEntities()) {
             if (entity.getClassName().equals(relationEntityClass.getSimpleName())) {
                 return entity;
             }
         }
+
         throw new InvalidEntityException("No such Relation Entity: " + relationEntityClass.getSimpleName());
+    }
+
+    /**
+     * Returns the Id property of the relation.
+     * @param _entityRelation The relation to get the Id property from.
+     * @return the Id Property.
+     * @throws InvalidEntityException
+     */
+    private Property getIdProperty(EntityRelation _entityRelation)
+            throws InvalidEntityException
+    {
+        final Entity sourceEntity   = getSourceEntity(_entityRelation);
+        final Entity relationEntity = getRelationEntity(_entityRelation);
+        final String relationField  = _entityRelation.getRelationFieldNameToCreate();
+
+        // if there is no relation field, construct the property.
+        if (relationField == null) {
+            return relationEntity.addStringProperty(
+                    sourceEntity.getClassName().toLowerCase() + ID_PROPERTY_POSTFIX).notNull().getProperty();
+        }
+
+        // If there is relation field, get the property from there
+        for (Property property : relationEntity.getProperties()) {
+            if (property.getPropertyName().equals(relationField)) {
+                return property;
+            }
+        }
+
+        // otherwise, add the relationField.
+        return relationEntity.addStringProperty(relationField).notNull().getProperty();
     }
 
     /**
@@ -63,26 +97,12 @@ public class EntityRelationBuilder {
      * @throws InvalidEntityRelationException
      * @throws InvalidEntityException
      */
-    public void buildRelation(EntityRelation _entityRelation) throws InvalidEntityRelationException, InvalidEntityException {
-        Entity sourceEntity = getSourceEntity(_entityRelation);
-        Entity relationEntity = getRelationEntity(_entityRelation);
-
-        String relationField = _entityRelation.getRelationFieldNameToCreate();
-        Property idProperty = null;
-        if (relationField == null){
-            idProperty = relationEntity.addStringProperty(sourceEntity.getClassName().toLowerCase()
-                    + ID_PROPERTY_POSTFIX).notNull().getProperty();
-        } else {
-            for (Property property : relationEntity.getProperties()) {
-                if (property.getPropertyName().equals(relationField)) {
-                    idProperty = property;
-                    break;
-                }
-            }
-            if (idProperty == null) {
-                idProperty = relationEntity.addStringProperty(relationField).notNull().getProperty();
-            }
-        }
+    public void buildRelation(EntityRelation _entityRelation)
+            throws InvalidEntityRelationException, InvalidEntityException
+    {
+        final Entity sourceEntity   = getSourceEntity(_entityRelation);
+        final Entity relationEntity = getRelationEntity(_entityRelation);
+        final Property idProperty   = getIdProperty(_entityRelation);
 
         if (_entityRelation.getRelationType().equals(EntityRelationType.ONE_TO_MANY)) {
             sourceEntity.addToMany(relationEntity, idProperty, _entityRelation.getRelationFieldName());
