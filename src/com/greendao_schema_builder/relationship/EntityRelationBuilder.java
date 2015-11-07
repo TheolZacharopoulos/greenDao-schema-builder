@@ -14,6 +14,8 @@ public class EntityRelationBuilder {
 
     private static final String ID_PROPERTY_POSTFIX = "Code";
 
+    private static final String CODE = "code";
+
     // the greenDao Schema
     private final Schema daoSchema;
 
@@ -62,12 +64,12 @@ public class EntityRelationBuilder {
     }
 
     /**
-     * Returns the Id property of the relation.
+     * Returns the Id property of the OneToMany relation.
      * @param _entityRelation The relation to get the Id property from.
      * @return the Id Property.
      * @throws InvalidEntityException
      */
-    private Property getIdProperty(EntityRelation _entityRelation)
+    private Property getIdPropertyOneToMany(EntityRelation _entityRelation)
             throws InvalidEntityException
     {
         final Entity sourceEntity   = getSourceEntity(_entityRelation);
@@ -92,6 +94,19 @@ public class EntityRelationBuilder {
     }
 
     /**
+     * Returns the Id property of the OneToOne relation.
+     * @param _entityRelation The relation to get the Id property from.
+     * @return the Id Property.
+     * @throws InvalidEntityException
+     */
+    private Property getIdPropertyOneToOne(EntityRelation _entityRelation)
+            throws InvalidEntityException
+    {
+        final Entity sourceEntity   = getSourceEntity(_entityRelation);
+        return sourceEntity.addStringProperty(_entityRelation.getRelationFieldName()).getProperty();
+    }
+
+    /**
      * Builds a new Entity relation between a source and a relation greenDao entities.
      * @param _entityRelation the entity relation to be built.
      * @throws InvalidEntityRelationException
@@ -102,14 +117,15 @@ public class EntityRelationBuilder {
     {
         final Entity sourceEntity   = getSourceEntity(_entityRelation);
         final Entity relationEntity = getRelationEntity(_entityRelation);
-        final Property idProperty   = getIdProperty(_entityRelation);
 
         if (_entityRelation.getRelationType().equals(EntityRelationType.ONE_TO_MANY)) {
+            final Property idProperty   = getIdPropertyOneToMany(_entityRelation);
             sourceEntity.addToMany(relationEntity, idProperty, _entityRelation.getRelationFieldName());
         }
 
         else if (_entityRelation.getRelationType().equals(EntityRelationType.ONE_TO_ONE)) {
-            sourceEntity.addToOne(relationEntity, idProperty, _entityRelation.getRelationFieldName());
+            final Property idProperty   = getIdPropertyOneToOne(_entityRelation);
+            sourceEntity.addToOne(relationEntity, idProperty);
         }
 
         else {
