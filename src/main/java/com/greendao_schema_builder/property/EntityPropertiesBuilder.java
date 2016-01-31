@@ -49,7 +49,7 @@ public class EntityPropertiesBuilder {
      * @return the added Dao Entity.
      */
     private Entity addEntityToSchema(Class<?> _entityClass, String _entityName) {
-        return daoSchema.addEntity(_entityName);
+        return daoSchema.addEntity(PropertyOptions.PREFIX_ENTITY_NAME + _entityName);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.greendao_schema_builder.relationship;
 import com.greendao_schema_builder.errors.InvalidEntityException;
 import com.greendao_schema_builder.errors.InvalidEntityRelationException;
 
+import com.greendao_schema_builder.property.PropertyOptions;
 import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
@@ -37,12 +38,12 @@ public class EntityRelationBuilder {
         final Class<?> sourceEntityClass = _entityRelation.getSourceEntity();
 
         for (Entity entity : daoSchema.getEntities()) {
-            if (entity.getClassName().equals(sourceEntityClass.getSimpleName())) {
+            if (entity.getClassName().equals(PropertyOptions.PREFIX_ENTITY_NAME + sourceEntityClass.getSimpleName())) {
                 return entity;
             }
         }
 
-        throw new InvalidEntityException("No such Source Entity: " + sourceEntityClass.getSimpleName());
+        throw new InvalidEntityException("No such Source Entity: " + PropertyOptions.PREFIX_ENTITY_NAME +  sourceEntityClass.getSimpleName());
     }
 
     /**
@@ -55,12 +56,12 @@ public class EntityRelationBuilder {
         final Class<?> relationEntityClass = _entityRelation.getRelationEntity();
 
         for (Entity entity : daoSchema.getEntities()) {
-            if (entity.getClassName().equals(relationEntityClass.getSimpleName())) {
+            if (entity.getClassName().equals(PropertyOptions.PREFIX_ENTITY_NAME + relationEntityClass.getSimpleName())) {
                 return entity;
             }
         }
 
-        throw new InvalidEntityException("No such Relation Entity: " + relationEntityClass.getSimpleName());
+        throw new InvalidEntityException("No such Relation Entity: " + PropertyOptions.PREFIX_ENTITY_NAME + relationEntityClass.getSimpleName());
     }
 
     /**

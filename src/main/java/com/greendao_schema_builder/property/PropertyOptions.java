@@ -4,6 +4,7 @@ package com.greendao_schema_builder.property;
  * Argument object for the Build Entity Properties.
  */
 public class PropertyOptions {
+    public final static String PREFIX_ENTITY_NAME = "DB";
     private final Class<?> entityClass;
     private final String primaryKey;
     private final String superClassName;
