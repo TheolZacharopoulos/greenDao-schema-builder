@@ -42,10 +42,26 @@ public class SchemaBuilder {
             String _defaultJavaPackage,
             String _outDirectory)
     {
+        this(_version, _defaultJavaPackage, _outDirectory, "");
+    }
+
+    /**
+     * Constructor.
+     * @param _version The greenDao Schema Version.
+     * @param _defaultJavaPackage The default Java package.
+     * @param _outDirectory The directory which the schema will be generated.
+     * @param _fieldPrefix Prefix for fields
+     */
+    public SchemaBuilder(
+            int _version,
+            String _defaultJavaPackage,
+            String _outDirectory,
+            String _fieldPrefix)
+    {
         outDirectory = _outDirectory;
         schema = new Schema(_version, _defaultJavaPackage);
         blackListFields = new ArrayList<String>();
-        entityPropertiesBuilder = new EntityPropertiesBuilder(schema);
+        entityPropertiesBuilder = new EntityPropertiesBuilder(schema, _fieldPrefix);
         entityRelationBuilder = new EntityRelationBuilder(schema);
 
         propertyOptionsList = new ArrayList<PropertyOptions>();

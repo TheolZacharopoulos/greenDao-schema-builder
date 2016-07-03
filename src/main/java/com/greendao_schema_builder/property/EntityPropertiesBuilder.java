@@ -20,16 +20,21 @@ public class EntityPropertiesBuilder {
 
     // The greenDao schema.
     private final Schema daoSchema;
+    private final String fieldPrefix;
 
     // The entities that have already added to the schema.
     private final List<Class<?>> addedEntityClasses;
 
+
+
     /**
      * Constructor.
      * @param _daoSchema the greenDao Schema.
+     * @param _fieldPrefix prefix for fields.
      */
-    public EntityPropertiesBuilder(Schema _daoSchema) {
+    public EntityPropertiesBuilder(Schema _daoSchema, String _fieldPrefix) {
         daoSchema = _daoSchema;
+        fieldPrefix = _fieldPrefix;
         addedEntityClasses = new ArrayList<Class<?>>();
     }
 
@@ -103,11 +108,13 @@ public class EntityPropertiesBuilder {
 
         // Add fields to the greenDao Entity.
         for (Field field : allFields) {
-            Class fieldType = field.getType();
-            String fieldTypeName = fieldType.getSimpleName();
+            final Class fieldType = field.getType();
+            final String fieldTypeName = fieldType.getSimpleName();
 
-            PropertyType propertyType = null;
-            String fieldName = field.getName();
+            final PropertyType propertyType;
+            final String fieldName = field.getName();
+
+            final String propertyName = fieldPrefix + fieldName;
 
             // Ignore field Blacklist.
             if (_blackListFields.contains(fieldName)) {
@@ -122,7 +129,7 @@ public class EntityPropertiesBuilder {
             // Convert the Enums to Strings.
             else if (((Class<?>) fieldType).isEnum()) {
                 propertyType = PropertyType.String;
-                greenDaoEntity.addProperty(propertyType, fieldName );
+                greenDaoEntity.addProperty(propertyType, propertyName);
                 continue;
             }
 
@@ -133,9 +140,9 @@ public class EntityPropertiesBuilder {
 
             // Add the primary key, if this is the field.
             if (fieldName.equalsIgnoreCase(_primaryKeyName)) {
-                greenDaoEntity.addProperty(propertyType, fieldName).primaryKey();
+                greenDaoEntity.addProperty(propertyType, propertyName).primaryKey();
             } else {
-                greenDaoEntity.addProperty(propertyType, fieldName);
+                greenDaoEntity.addProperty(propertyType, propertyName);
             }
         }
 
