@@ -1,7 +1,7 @@
 package com.greendao_schema_builder.property;
 
+import com.greendao_schema_builder.SchemaBuilder;
 import com.greendao_schema_builder.utils.SchemaGenUtils;
-
 import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.PropertyType;
 import de.greenrobot.daogenerator.Schema;
@@ -117,7 +117,9 @@ public class EntityPropertiesBuilder {
             final String propertyName = fieldPrefix + fieldName;
 
             // Ignore field Blacklist.
-            if (_blackListFields.contains(fieldName)) {
+            if (_blackListFields.contains(fieldName) ||
+                    _blackListFields.contains(SchemaBuilder.extractFullPathName(_entityClass, fieldName)))
+            {
                 continue;
             }
 
@@ -129,8 +131,6 @@ public class EntityPropertiesBuilder {
             // Convert the Enums to Strings.
             else if (((Class<?>) fieldType).isEnum()) {
                 propertyType = PropertyType.String;
-                greenDaoEntity.addProperty(propertyType, propertyName);
-                continue;
             }
 
             // Convert from the string field name to the PropertyType Enum.
@@ -144,8 +144,8 @@ public class EntityPropertiesBuilder {
             } else {
                 greenDaoEntity.addProperty(propertyType, propertyName);
             }
-        }
 
+        }
         return greenDaoEntity;
     }
 }

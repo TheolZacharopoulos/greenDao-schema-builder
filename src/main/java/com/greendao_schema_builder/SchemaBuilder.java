@@ -6,7 +6,6 @@ import com.greendao_schema_builder.property.EntityPropertiesBuilder;
 import com.greendao_schema_builder.property.PropertyOptions;
 import com.greendao_schema_builder.relationship.EntityRelation;
 import com.greendao_schema_builder.relationship.EntityRelationBuilder;
-
 import de.greenrobot.daogenerator.DaoGenerator;
 import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Schema;
@@ -87,8 +86,14 @@ public class SchemaBuilder {
             entityRelations.add(_relation);
 
             // Add the relation to blacklist in order not to recreate it.
-            addFieldToBlackList(_relation.getRelationFieldName());
+            addFieldToBlackList(extractFullPathName(
+                    _relation.getSourceEntity(),
+                    _relation.getRelationFieldName()));
         }
+    }
+
+    public static String extractFullPathName(Class<?> entityClass, String fieldName) {
+        return entityClass.getCanonicalName() + "." + fieldName;
     }
 
     /**
